@@ -26,11 +26,25 @@ class PlayerScreen extends Component {
 
     // fires when the user manually changes the map postion
     onRegionChange(region) {
-        this.setState({ selectedRegion: region });
+        this.setState({ selectedRegion: region }, () => this.getPositions(this.state.selectedRegion));
         console.log(region);
     }
 
     watchID = null;
+
+    getPositions(selectedRegion) {
+        const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 2).toString();
+        const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 2).toString();
+        const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 2).toString();
+        const SW_LNG = (selectedRegion.longitude - selectedRegion.longitudeDelta / 2).toString();
+
+        this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
+        this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
+        this.args.baseURL = this.args.baseURL.replace(/SW_LAT_1/gi, SW_LAT);
+        this.args.baseURL = this.args.baseURL.replace(/SW_LNG_1/gi, SW_LNG);
+
+        this.props.getDataSaga(this.args);  
+    }
     
     componentDidMount() {
         Geolocation.getCurrentPosition(
@@ -46,19 +60,7 @@ class PlayerScreen extends Component {
                 longitude: position.coords.longitude,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
-            }});
-
-            const NE_LAT = (position.coords.latitude + position.coords.latitudeDelta).toString();
-            const NE_LNG = (position.coords.longitude + position.coords.longitudeDelta).toString();
-            const SW_LAT = (position.coords.latitude - position.coords.latitudeDelta).toString();
-            const SW_LNG = (position.coords.longitude - position.coords.longitudeDelta).toString();
-
-            this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
-            this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
-            this.args.baseURL = this.args.baseURL.replace(/SW_LAT_1/gi, SW_LAT);
-            this.args.baseURL = this.args.baseURL.replace(/SW_LNG_1/gi, SW_LNG);
-
-            this.props.getDataSaga(this.args);  
+            }}, () => this.getPositions(this.state.selectedRegion));
           });
           
     }
