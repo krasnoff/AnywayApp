@@ -1,8 +1,6 @@
 import React from 'react';
-import { Button, StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { getDataSaga } from '../actions/rest';
-import { RSS_URL, DEVICE_LIST_LODED, BASE_URL } from '../actions/types';
 
 class Splash extends React.Component {
     static navigationOptions = {
@@ -13,12 +11,6 @@ class Splash extends React.Component {
         OriginalXMLResponse: {},
         TrackPlayerList: []
       }
-
-    args = {
-        str: 'sdfsdfsdf',
-        baseURL: RSS_URL,
-        callbackFunction: DEVICE_LIST_LODED
-    }
 
     componentDidMount() {
         // activate
@@ -61,7 +53,7 @@ const styles = StyleSheet.create({
   
   const mapDispatchToProps = dispatch => {
     return {
-      getDataSaga: args => dispatch(getDataSaga(args))
+      
     }
   }
 

@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { API_ERRORED, DATA_LOADED, DATA_REQUESTED, Ocp_Apim_Subscription_Key } from "../actions/types";
+import { API_ERRORED, DATA_REQUESTED } from "../actions/types";
 
 export default function* watcherSaga() {
     yield takeEvery(DATA_REQUESTED, workerSaga);
