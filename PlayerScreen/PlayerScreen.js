@@ -48,10 +48,10 @@ class PlayerScreen extends Component {
                 longitudeDelta: LONGITUDE_DELTA,
             }});
 
-            const NE_LAT = (position.coords.latitude + LATITUDE_DELTA).toString();
-            const NE_LNG = (position.coords.longitude + LONGITUDE_DELTA).toString();
-            const SW_LAT = (position.coords.latitude - LATITUDE_DELTA).toString();
-            const SW_LNG = (position.coords.longitude - LONGITUDE_DELTA).toString();
+            const NE_LAT = (position.coords.latitude + position.coords.latitudeDelta).toString();
+            const NE_LNG = (position.coords.longitude + position.coords.longitudeDelta).toString();
+            const SW_LAT = (position.coords.latitude - position.coords.latitudeDelta).toString();
+            const SW_LNG = (position.coords.longitude - position.coords.longitudeDelta).toString();
 
             this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
             this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
