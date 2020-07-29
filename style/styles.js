@@ -4,8 +4,8 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
   textContainer : {
     padding: 8,
@@ -27,5 +27,19 @@ export default StyleSheet.create({
     borderWidth: 0.0,
     alignItems: 'center',
   },
-  
+  containerMap: {
+    ...StyleSheet.absoluteFillObject,
+    height: 400,
+    width: 400,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').width
+  },
+  belowMaps: {
+    marginTop: Dimensions.get('window').width + 10,
+  },
 });
