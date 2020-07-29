@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styles from '../style/styles';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { RSS_URL, DEVICE_LIST_LODED, BASE_URL } from '../actions/types';
+import { RSS_URL, DEVICE_LIST_LODED, LATITUDE_DELTA, LONGITUDE_DELTA } from '../actions/types';
 import { getDataSaga } from '../actions/rest';
 
 class PlayerScreen extends Component {
@@ -44,14 +44,14 @@ class PlayerScreen extends Component {
             this.setState({selectedRegion: {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
-                latitudeDelta: 0.012,
-                longitudeDelta: 0.012,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
             }});
 
-            const NE_LAT = (position.coords.latitude + 0.012).toString();
-            const NE_LNG = (position.coords.longitude + 0.012).toString();
-            const SW_LAT = (position.coords.latitude - 0.012).toString();
-            const SW_LNG = (position.coords.longitude - 0.012).toString();
+            const NE_LAT = (position.coords.latitude + LATITUDE_DELTA).toString();
+            const NE_LNG = (position.coords.longitude + LONGITUDE_DELTA).toString();
+            const SW_LAT = (position.coords.latitude - LATITUDE_DELTA).toString();
+            const SW_LNG = (position.coords.longitude - LONGITUDE_DELTA).toString();
 
             this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
             this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);

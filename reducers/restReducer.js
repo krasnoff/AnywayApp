@@ -1,4 +1,4 @@
-import { DEVICE_LIST_LODED, SEARCH_RESULTS_LOADED, API_ERRORED } from '../actions/types';
+import { DEVICE_LIST_LODED, API_ERRORED } from '../actions/types';
 import initialState from '../actions/state'
 
 const restReducer = (state = initialState, action) => {
@@ -8,13 +8,6 @@ const restReducer = (state = initialState, action) => {
         return Object.assign({}, state, {
           errorCode: 0,
           OriginalXMLResponse: state.OriginalXMLResponse.concat(action)
-        });
-      }
-      case SEARCH_RESULTS_LOADED: {
-        state.burstList = [];
-        return Object.assign({}, state, {
-          errorCode: 0,
-          burstList: state.burstList.concat(action)
         });
       }
       case API_ERRORED: {
