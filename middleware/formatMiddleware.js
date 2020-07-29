@@ -8,7 +8,7 @@ function forbiddenWordsMiddleware({ dispatch }) {
             // do your stuff
 
             if (action.type === DEVICE_LIST_LODED) {
-                let res = [];
+                /*let res = [];
                 action.payload.items.forEach(el => {
                     res.push({
                         id: el.id,
@@ -18,7 +18,7 @@ function forbiddenWordsMiddleware({ dispatch }) {
                         artwork: action.payload.image.url
                     })
                 });
-                action.payload = res;
+                action.payload = res;*/
             }
 
             return next(action);

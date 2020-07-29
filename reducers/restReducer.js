@@ -7,14 +7,14 @@ const restReducer = (state = initialState, action) => {
         state.OriginalXMLResponse = [];
         return Object.assign({}, state, {
           errorCode: 0,
-          OriginalXMLResponse: state.OriginalXMLResponse.concat(action.payload)
+          OriginalXMLResponse: state.OriginalXMLResponse.concat(action)
         });
       }
       case SEARCH_RESULTS_LOADED: {
         state.burstList = [];
         return Object.assign({}, state, {
           errorCode: 0,
-          burstList: state.burstList.concat(action.payload)
+          burstList: state.burstList.concat(action)
         });
       }
       case API_ERRORED: {

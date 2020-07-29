@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import styles from '../style/styles';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { RSS_URL, DEVICE_LIST_LODED, BASE_URL } from '../actions/types';
+import { getDataSaga } from '../actions/rest';
 
 class PlayerScreen extends Component {
     static navigationOptions = {
@@ -16,10 +18,16 @@ class PlayerScreen extends Component {
         selectedRegion: null,
     };
 
+    args = {
+        str: 'sdfsdfsdf',
+        baseURL: RSS_URL,
+        callbackFunction: DEVICE_LIST_LODED
+    }
+
     // fires when the user manually changes the map postion
     onRegionChange(region) {
-        // this.setState({ selectedRegion: region });
-        // console.log(region);
+        this.setState({ selectedRegion: region });
+        console.log(region);
     }
 
     watchID = null;
@@ -39,11 +47,31 @@ class PlayerScreen extends Component {
                 latitudeDelta: 0.012,
                 longitudeDelta: 0.012,
             }});
+
+            const NE_LAT = (position.coords.latitude + 0.012).toString();
+            const NE_LNG = (position.coords.longitude + 0.012).toString();
+            const SW_LAT = (position.coords.latitude - 0.012).toString();
+            const SW_LNG = (position.coords.longitude - 0.012).toString();
+
+            this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
+            this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
+            this.args.baseURL = this.args.baseURL.replace(/SW_LAT_1/gi, SW_LAT);
+            this.args.baseURL = this.args.baseURL.replace(/SW_LNG_1/gi, SW_LNG);
+
+            this.props.getDataSaga(this.args);  
           });
+          
     }
 
     componentWillUnmount() {
         this.watchID != null && Geolocation.clearWatch(this.watchID);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // callback function from server
+        if (this.props.OriginalXMLResponse !== prevProps.OriginalXMLResponse) {
+            console.log(this.props)
+        }
     }
     
     render() {
@@ -54,7 +82,7 @@ class PlayerScreen extends Component {
                         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                         style={styles.map}
                         region={this.state.selectedRegion}
-                        onRegionChange={(region) => this.onRegionChange(region)}
+                        onRegionChangeComplete={(region) => this.onRegionChange(region)}
                     />
                 </View>
                 <View style={styles.belowMaps}>
@@ -69,13 +97,15 @@ class PlayerScreen extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        TrackPlayerList: ownProps.route.params.TrackPlayerList
+        OriginalXMLResponse: state.rests.OriginalXMLResponse,
+        TrackPlayerList: state.rests.TrackPlayerList,
+        errorCode: state.rests.errorCode
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-     
+        getDataSaga: args => dispatch(getDataSaga(args))
     }
 }
 

@@ -16,5 +16,5 @@ function* workerSaga(args) {
 
 function getDataSaga(args) {
     return fetch(args.args.baseURL, {})
-    .then((response) =>  response.json())
+    .then(response => response.json())
 }
