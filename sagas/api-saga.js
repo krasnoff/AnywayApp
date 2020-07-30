@@ -10,11 +10,13 @@ function* workerSaga(args) {
         const payload = yield call(getDataSaga, args);
         yield put({ type: args.args.callbackFunction, payload });
     } catch (e) {
-        yield put({ type: API_ERRORED, payload: e });
+        console.log('workerSaga_error', args)
+        yield put({ type: API_ERRORED, payload: {errorObj: e, argsObj: args} });
     }
 }
 
 function getDataSaga(args) {
-    return fetch(args.args.baseURL, {})
+    console.log('getDataSaga', args)
+    return fetch(encodeURI(args.args.baseURL), {})
     .then(response => response.json())
 }

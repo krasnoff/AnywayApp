@@ -12,6 +12,7 @@ const restReducer = (state = initialState, action) => {
       }
       case API_ERRORED: {
         state.burstList = [];
+        state.urlRetry = action.payload.argsObj.args.baseURL;
         return Object.assign({}, state, {
           errorCode: 404
         });
