@@ -23,8 +23,6 @@ class PlayerScreen extends Component {
         }
     };
 
-    allowGetLocation = true;
-    urlRetry = 0;
     selectedRegion = {};
 
     args = {
@@ -42,10 +40,10 @@ class PlayerScreen extends Component {
     watchID = null;
 
     getPositions(selectedRegion) {
-        const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 2).toString();
-        const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 2).toString();
-        const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 2).toString();
-        const SW_LNG = (selectedRegion.longitude - selectedRegion.longitudeDelta / 2).toString();
+        const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 4).toString();
+        const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 4).toString();
+        const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 4).toString();
+        const SW_LNG = (selectedRegion.longitude - selectedRegion.longitudeDelta / 4).toString();
 
         this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
         this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
@@ -66,15 +64,15 @@ class PlayerScreen extends Component {
             {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
           );
           this.watchID = Geolocation.watchPosition(position => {
-            this.selectedRegion = {
+            const selectedRegion = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA
             };
             
-            this.setState({selectedRegion: this.selectedRegion});
-            this.getPositions(this.selectedRegion);          
+            this.setState({selectedRegion: selectedRegion});
+            this.getPositions(selectedRegion);          
         });
           
     }
@@ -86,30 +84,12 @@ class PlayerScreen extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         // callback function from server
         if (this.props.OriginalXMLResponse !== prevProps.OriginalXMLResponse) {
-            this.urlRetry = 0;
             console.log(this.props)
         }
 
-        // if (this.props.errorCode !== 0) {
-        //     this.urlRetry++;
-        //     if (this.urlRetry < 5)
-        //         this.props.getDataSaga(this.args);  
-        //     else 
-        //         alert('תקלה בתקשורת. אנא נסה שנית מאוחר יותר')
-        //     console.log('error: ', this.props.urlRetry);
-        // }
-        // console.log('markers', this.props.OriginalXMLResponse.markers)
-
-        // if (prevState.selectedRegion.latitude !== this.state.selectedRegion.latitude || prevState.selectedRegion.longitude !== this.state.selectedRegion.longitude) {
-        //     if (this.allowGetLocation /*&& this.state.selectedRegion.longitude !== 0 && this.state.selectedRegion.latitude !== 0*/) {
-        //         console.log('prevState', this.state.selectedRegion);
-        //         this.getPositions(this.state.selectedRegion)
-        //         this.allowGetLocation = false;
-        //         setTimeout(() => {
-        //             this.allowGetLocation = true;
-        //         }, 1000);
-        //     }
-        // }
+        if (this.props.errorCode !== 0) {
+            alert('תקלה בתקשורת. אנא נסה שנית מאוחר יותר');
+        }
     }
     
     render() {
@@ -137,9 +117,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         OriginalXMLResponse: state.rests.OriginalXMLResponse,
         TrackPlayerList: state.rests.TrackPlayerList,
-        errorCode: state.rests.errorCode,
-        urlRetry: state.rests.urlRetry,
-        urlRetryCount: state.rests.urlRetryCount
+        errorCode: state.rests.errorCode
     }
 }
 

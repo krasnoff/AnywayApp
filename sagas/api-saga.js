@@ -1,4 +1,4 @@
-import { takeEvery, call, put } from "redux-saga/effects";
+import { takeEvery, call, put, retry } from "redux-saga/effects";
 import { API_ERRORED, DATA_REQUESTED } from "../actions/types";
 
 export default function* watcherSaga() {
@@ -7,10 +7,9 @@ export default function* watcherSaga() {
 
 function* workerSaga(args) {
     try {
-        const payload = yield call(getDataSaga, args);
-        yield put({ type: args.args.callbackFunction, payload });
+        const response = yield retry(20, 1000, getDataSaga, args)
+        yield put({ type: args.args.callbackFunction, payload: response });
     } catch (e) {
-        console.log('workerSaga_error', args)
         yield put({ type: API_ERRORED, payload: {errorObj: e, argsObj: args} });
     }
 }
