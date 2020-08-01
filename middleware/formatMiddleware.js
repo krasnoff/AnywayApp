@@ -11,7 +11,7 @@ function forbiddenWordsMiddleware({ dispatch }) {
                     const newEl = {
                         title: el.title,
                         description: el.description,
-                        coordinate: {
+                        latlng: {
                             latitude: el.latitude,
                             longitude: el.longitude
                         }

@@ -3,7 +3,7 @@ import { View, Text, Image, AppState, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import styles from '../style/styles';
 import Geolocation from '@react-native-community/geolocation';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { RSS_URL, DEVICE_LIST_LODED, LATITUDE_DELTA, LONGITUDE_DELTA } from '../actions/types';
 import { getDataSaga } from '../actions/rest';
 
@@ -20,7 +20,8 @@ class PlayerScreen extends Component {
             longitude: 0,
             latitudeDelta: 0,
             longitudeDelta: 0
-        }
+        },
+        markers: [],
     };
 
     selectedRegion = {};
@@ -84,7 +85,8 @@ class PlayerScreen extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         // callback function from server
         if (this.props.OriginalXMLResponse !== prevProps.OriginalXMLResponse) {
-            console.log(this.props)
+            console.log(this.props.OriginalXMLResponse[0].payload.markersNew);
+            this.setState({markers: this.props.OriginalXMLResponse[0].payload.markersNew});
         }
 
         if (this.props.errorCode !== 0) {
@@ -100,8 +102,15 @@ class PlayerScreen extends Component {
                         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                         style={styles.map}
                         region={this.state.selectedRegion}
-                        onRegionChangeComplete={(region) => this.onRegionChange(region)}
-                    />
+                        onRegionChangeComplete={(region) => this.onRegionChange(region)}>
+                        {this.state.markers.map(marker => (
+                            <Marker
+                            coordinate={marker.latlng}
+                            title={marker.title}
+                            description={marker.description}
+                            />
+                        ))}
+                    </MapView>
                 </View>
                 <View style={styles.belowMaps}>
                     <Text>Hello 2</Text>
