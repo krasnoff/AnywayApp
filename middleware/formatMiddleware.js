@@ -1,24 +1,25 @@
 import { DEVICE_LIST_LODED } from "../actions/types";
 
-const forbiddenWords = ["spam", "money"];
-
 function forbiddenWordsMiddleware({ dispatch }) {
     return function (next) {
         return function (action) {
             // do your stuff
 
             if (action.type === DEVICE_LIST_LODED) {
-                /*let res = [];
-                action.payload.items.forEach(el => {
-                    res.push({
-                        id: el.id,
-                        url: el.enclosures[0].url,
+                let newMarkers = [];
+                action.payload.markers.forEach(el => {
+                    const newEl = {
                         title: el.title,
-                        artist: action.payload.title,
-                        artwork: action.payload.image.url
-                    })
+                        description: el.description,
+                        coordinate: {
+                            latitude: el.latitude,
+                            longitude: el.longitude
+                        }
+                    }
+                    newMarkers.push(newEl);
                 });
-                action.payload = res;*/
+
+                action.payload.markersNew = newMarkers;
             }
 
             return next(action);
