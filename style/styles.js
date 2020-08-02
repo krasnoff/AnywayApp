@@ -29,17 +29,26 @@ export default StyleSheet.create({
   },
   containerMap: {
     ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: 400,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').width
+    height: Dimensions.get('window').height
   },
   belowMaps: {
-    marginTop: Dimensions.get('window').width + 10,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
+  innerBox: {
+    width: '60%',
+    height: 100,
+    backgroundColor: '#000000',
+    opacity: 0.5,
+    borderRadius: 20
+  }
 });

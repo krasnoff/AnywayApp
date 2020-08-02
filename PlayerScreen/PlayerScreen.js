@@ -6,10 +6,11 @@ import Geolocation from '@react-native-community/geolocation';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { RSS_URL, DEVICE_LIST_LODED, LATITUDE_DELTA, LONGITUDE_DELTA } from '../actions/types';
 import { getDataSaga } from '../actions/rest';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class PlayerScreen extends Component {
     static navigationOptions = {
-        title: 'Player - Kobi Krasnoff',
+        title: 'AnyWay - Kobi Krasnoff',
     };
 
     state = {
@@ -22,6 +23,7 @@ class PlayerScreen extends Component {
             longitudeDelta: 0
         },
         markers: [],
+        spinner: false
     };
 
     selectedRegion = {};
@@ -34,13 +36,17 @@ class PlayerScreen extends Component {
 
     // fires when the user manually changes the map postion
     onRegionChange(region) {
-        // this.setState({ selectedRegion: region }/*, () => this.getPositions(this.state.selectedRegion)*/);
-        
+        console.log('onRegionChange', region)
+        // if (region.latitude !== 0 && region.longitude !== 0) {
+        //     this.getPositions(region);   
+        // }
     }
 
     watchID = null;
 
     getPositions(selectedRegion) {
+        this.setState({spinner: true});
+        
         const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 4).toString();
         const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 4).toString();
         const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 4).toString();
@@ -73,7 +79,7 @@ class PlayerScreen extends Component {
             };
             
             this.setState({selectedRegion: selectedRegion});
-            this.getPositions(selectedRegion);          
+            this.getPositions(selectedRegion);   
         });
           
     }
@@ -86,7 +92,7 @@ class PlayerScreen extends Component {
         // callback function from server
         if (this.props.OriginalXMLResponse !== prevProps.OriginalXMLResponse) {
             console.log(this.props.OriginalXMLResponse[0].payload.markersNew);
-            this.setState({markers: this.props.OriginalXMLResponse[0].payload.markersNew});
+            this.setState({markers: this.props.OriginalXMLResponse[0].payload.markersNew, spinner: false});
         }
 
         if (this.props.errorCode !== 0) {
@@ -103,20 +109,28 @@ class PlayerScreen extends Component {
                         style={styles.map}
                         region={this.state.selectedRegion}
                         onRegionChangeComplete={(region) => this.onRegionChange(region)}>
-                        {this.state.markers.map(marker => (
+                        {this.state.markers.map((marker, i) => (
                             <Marker
                             coordinate={marker.latlng}
                             title={marker.title}
                             description={marker.description}
+                            key={i}
                             />
                         ))}
                     </MapView>
                 </View>
-                <View style={styles.belowMaps}>
-                    <Text>Hello 2</Text>
-                    <Text>latitude: {this.state.initialPosition ? this.state.initialPosition.coords.latitude : null}, 
-                    longitude: {this.state.initialPosition ? this.state.initialPosition.coords.longitude : null}</Text>
-                </View>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'אנא המתן...'}
+                    textStyle={styles.spinnerTextStyle}
+                />
+                {/* <View style={styles.belowMaps}>
+                    <View style={styles.innerBox}>
+                        <Text>Hello 2</Text>
+                        <Text>latitude: {this.state.initialPosition ? this.state.initialPosition.coords.latitude : null}, 
+                        longitude: {this.state.initialPosition ? this.state.initialPosition.coords.longitude : null}</Text>
+                    </View>
+                </View> */}
             </View>
         );
     }

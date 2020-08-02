@@ -16,7 +16,7 @@ const Drawer = createDrawerNavigator();
 function DrawerPages() {
   return (
     <Drawer.Navigator initialRouteName="Player" backBehavior="initialRoute">
-      <Drawer.Screen name="Player" component={PlayerScreen} />
+      <Drawer.Screen name="הצג מפה" component={PlayerScreen} />
     </Drawer.Navigator>
   );
 }
@@ -29,7 +29,7 @@ function App() {
         <Stack.Screen name="DrawerPages" component={DrawerPages} options={ props => { 
           const navigation = props.navigation;
           return {
-            title: 'Player - Kobi Krasnoff', 
+            title: 'Anyway - Kobi Krasnoff', 
             headerStyle: { backgroundColor: '#f4511e'}, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' },
             headerLeft: () => (
               <View style={{paddingLeft:16}}>
