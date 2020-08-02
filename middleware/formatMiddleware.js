@@ -14,10 +14,15 @@ function forbiddenWordsMiddleware({ dispatch }) {
                         latlng: {
                             latitude: el.latitude,
                             longitude: el.longitude
-                        }
+                        },
+                        severity: el.accident_severity,
+                        type: el.accident_type
                     }
+
                     newMarkers.push(newEl);
                 });
+
+                newMarkers = newMarkers.filter(el => (el.severity === 1 || el.severity === 2 || el.severity === 3))
 
                 action.payload.markersNew = newMarkers;
             }

@@ -26,7 +26,7 @@ class PlayerScreen extends Component {
         spinner: false
     };
 
-    selectedRegion = {};
+    
 
     args = {
         str: 'sdfsdfsdf',
@@ -36,17 +36,21 @@ class PlayerScreen extends Component {
 
     // fires when the user manually changes the map postion
     onRegionChange(region) {
-        console.log('onRegionChange', region)
-        // if (region.latitude !== 0 && region.longitude !== 0) {
-        //     this.getPositions(region);   
-        // }
+        if (region.latitude !== 0 && region.longitude !== 0) {
+            if (!(parseFloat(this.state.selectedRegion.latitude).toFixed(5) === parseFloat(region.latitude).toFixed(5) &&
+                parseFloat(this.state.selectedRegion.longitude).toFixed(5) === parseFloat(region.longitude).toFixed(5) &&
+                parseFloat(this.state.selectedRegion.latitudeDelta).toFixed(5) === parseFloat(region.latitudeDelta).toFixed(5) &&
+                parseFloat(this.state.selectedRegion.longitudeDelta).toFixed(5) === parseFloat(region.longitudeDelta).toFixed(5))) {
+                    console.log('onRegionChange-2', region)
+                    this.getPositions(region);   
+            }
+            this.setState({selectedRegion: region});
+        }
     }
 
     watchID = null;
 
     getPositions(selectedRegion) {
-        this.setState({spinner: true});
-        
         const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 4).toString();
         const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 4).toString();
         const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 4).toString();
@@ -65,7 +69,7 @@ class PlayerScreen extends Component {
         Geolocation.getCurrentPosition(
             position => {
                 // this.setState({initialPosition: position});
-                
+                // this.setState({spinner: true});
             },
             error => Alert.alert('Error', JSON.stringify(error)),
             {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
@@ -79,7 +83,7 @@ class PlayerScreen extends Component {
             };
             
             this.setState({selectedRegion: selectedRegion});
-            this.getPositions(selectedRegion);   
+            // this.getPositions(selectedRegion);   
         });
           
     }
@@ -115,6 +119,8 @@ class PlayerScreen extends Component {
                             title={marker.title}
                             description={marker.description}
                             key={i}
+                            pinColor = {marker.severity == 3 ? '#ffd82b' : marker.severity == 2 ? '#ff9f1c' : '#d81c32'}
+                            
                             />
                         ))}
                     </MapView>
@@ -124,13 +130,6 @@ class PlayerScreen extends Component {
                     textContent={'אנא המתן...'}
                     textStyle={styles.spinnerTextStyle}
                 />
-                {/* <View style={styles.belowMaps}>
-                    <View style={styles.innerBox}>
-                        <Text>Hello 2</Text>
-                        <Text>latitude: {this.state.initialPosition ? this.state.initialPosition.coords.latitude : null}, 
-                        longitude: {this.state.initialPosition ? this.state.initialPosition.coords.longitude : null}</Text>
-                    </View>
-                </View> */}
             </View>
         );
     }
