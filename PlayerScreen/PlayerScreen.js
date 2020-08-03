@@ -26,14 +26,6 @@ class PlayerScreen extends Component {
         spinner: false
     };
 
-    
-
-    args = {
-        str: 'sdfsdfsdf',
-        baseURL: RSS_URL,
-        callbackFunction: DEVICE_LIST_LODED
-    }
-
     // fires when the user manually changes the map postion
     onRegionChange(region) {
         if (region.latitude !== 0 && region.longitude !== 0) {
@@ -51,18 +43,23 @@ class PlayerScreen extends Component {
     watchID = null;
 
     getPositions(selectedRegion) {
+        let baseURLObj = RSS_URL;
+        
         const NE_LAT = (selectedRegion.latitude + selectedRegion.latitudeDelta / 4).toString();
         const NE_LNG = (selectedRegion.longitude + selectedRegion.longitudeDelta / 4).toString();
         const SW_LAT = (selectedRegion.latitude - selectedRegion.latitudeDelta / 4).toString();
         const SW_LNG = (selectedRegion.longitude - selectedRegion.longitudeDelta / 4).toString();
 
-        this.args.baseURL = this.args.baseURL.replace(/NE_LAT_1/gi, NE_LAT);
-        this.args.baseURL = this.args.baseURL.replace(/NE_LNG_1/gi, NE_LNG);
-        this.args.baseURL = this.args.baseURL.replace(/SW_LAT_1/gi, SW_LAT);
-        this.args.baseURL = this.args.baseURL.replace(/SW_LNG_1/gi, SW_LNG);
+        baseURLObj = baseURLObj.replace(/NE_LAT_1/gi, NE_LAT);
+        baseURLObj = baseURLObj.replace(/NE_LNG_1/gi, NE_LNG);
+        baseURLObj = baseURLObj.replace(/SW_LAT_1/gi, SW_LAT);
+        baseURLObj = baseURLObj.replace(/SW_LNG_1/gi, SW_LNG);
 
-        console.log('getPositions', this.args.baseURL)
-        this.props.getDataSaga(this.args);  
+        console.log('getPositions', baseURLObj)
+        this.props.getDataSaga({
+            baseURL: baseURLObj,
+            callbackFunction: DEVICE_LIST_LODED
+        });  
     }
     
     componentDidMount() {
