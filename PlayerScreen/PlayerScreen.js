@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, Image, AppState, Platform } from 'react-native';
+import { View, Text, Image, AppState, Platform, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import styles from '../style/styles';
 import Geolocation from '@react-native-community/geolocation';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout, CalloutSubview } from 'react-native-maps';
 import { RSS_URL, DEVICE_LIST_LODED, LATITUDE_DELTA, LONGITUDE_DELTA } from '../actions/types';
 import { getDataSaga } from '../actions/rest';
 import Spinner from 'react-native-loading-spinner-overlay';
+import CustomCallout from '../Components/CustomCallout';
 
 class PlayerScreen extends Component {
     static navigationOptions = {
@@ -112,13 +113,34 @@ class PlayerScreen extends Component {
                         onRegionChangeComplete={(region) => this.onRegionChange(region)}>
                         {this.state.markers.map((marker, i) => (
                             <Marker
-                            coordinate={marker.latlng}
-                            title={marker.title}
-                            description={marker.description}
-                            key={i}
-                            pinColor = {marker.severity == 3 ? '#ffd82b' : marker.severity == 2 ? '#ff9f1c' : '#d81c32'}
-                            
-                            />
+                                coordinate={marker.latlng}
+                                key={i}
+                                pinColor = {marker.severity == 3 ? '#ffd82b' : marker.severity == 2 ? '#ff9f1c' : '#d81c32'}
+                                // calloutOffset={{ x: 0, y: 0 }}
+                                // calloutAnchor={{ x: 0, y: 0 }}
+                                title={marker.title}
+                                description={marker.description}
+                            >
+                                <Callout
+                                    alphaHitTest
+                                    tooltip
+                                    onPress={e => {
+                                        if (
+                                        e.nativeEvent.action === 'marker-inside-overlay-press' ||
+                                        e.nativeEvent.action === 'callout-inside-press'
+                                        ) {
+                                        return;
+                                        }
+
+                                        Alert.alert('callout pressed');
+                                    }}
+                                    style={styles_callout.customView}
+                                >
+                                    <CustomCallout>
+                                        <Text>{marker.description}</Text>
+                                    </CustomCallout>
+                                </Callout>
+                            </Marker>
                         ))}
                     </MapView>
                 </View>
@@ -145,5 +167,55 @@ const mapDispatchToProps = dispatch => {
         getDataSaga: args => dispatch(getDataSaga(args))
     }
 }
+
+const styles_callout = StyleSheet.create({
+    customView: {
+      width: 260,
+      height: 215,
+    },
+    plainView: {
+      width: 60,
+    },
+    container: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    map: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    bubble: {
+      flex: 1,
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      borderRadius: 20,
+    },
+    latlng: {
+      width: 200,
+      alignItems: 'stretch',
+    },
+    button: {
+      width: 80,
+      paddingHorizontal: 12,
+      alignItems: 'center',
+      marginHorizontal: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      marginVertical: 20,
+      backgroundColor: 'transparent',
+    },
+    calloutButton: {
+      width: 'auto',
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      paddingHorizontal: 6,
+      paddingVertical: 6,
+      borderRadius: 12,
+      alignItems: 'center',
+      marginHorizontal: 10,
+      marginVertical: 10,
+    },
+  });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerScreen)
